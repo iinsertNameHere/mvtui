@@ -1,6 +1,10 @@
 import illwill
-import "../mullvad/account"
+
 import "../global"
+
+import "../mullvad/account"
+
+import "../asciiart/logo"
 
 const maxSelectIndex = 1
 const minSelectIndex = 0
@@ -12,18 +16,18 @@ proc login_page*(tb: var TerminalBuffer, account: var Account) =
     elif SELECT_INDEX < minSelectIndex:
         SELECT_INDEX = maxSelectIndex
     
-    var x = int((tb.width / 2) - (LOGO_ART[0].len / 2))
+    var x = int((tb.width / 2) - (logoArt[0].len / 2))
     var y = 5
 
     tb.setForegroundColor(fgBlue)
     var current_y = 0 + y
-    for i, line in LOGO_ART:
+    for i, line in logoArt:
         current_y = i + y
         tb.write(x, current_y, line)
     
     tb.setForegroundColor(fgYellow)
-    x = int((tb.width / 2) - (LOGO_SUBTITLE.len / 2))
-    tb.write(x, current_y + 2, LOGO_SUBTITLE)
+    x = int((tb.width / 2) - (logoSubtitle.len / 2))
+    tb.write(x, current_y + 2, logoSubtitle)
     tb.resetAttributes()
     
     x = int(tb.width / 2) - 9

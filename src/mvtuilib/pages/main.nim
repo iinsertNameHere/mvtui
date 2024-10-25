@@ -1,11 +1,12 @@
-import illwill
-import strutils
-import tables
+import illwill, strutils, tables
 import "../global"
+
 import "../mullvad/account"
 import "../mullvad/status"
-import "../asciiart/countries"
 import "../mullvad/connection"
+
+import "../asciiart/countries"
+import "../asciiart/logo"
 
 const maxSelectIndex = 5
 const minSelectIndex = 0
@@ -17,18 +18,18 @@ proc main_page*(tb: var TerminalBuffer, account: var Account) =
 
     let halfwidth  = tb.width / 2
 
-    var x = int(halfwidth - (LOGO_ART[0].len / 2))
+    var x = int(halfwidth - (logoArt[0].len / 2))
     var y = 3
 
     tb.setForegroundColor(fgBlue)
     var current_y = 0 + y
-    for i, line in LOGO_ART:
+    for i, line in logoArt:
         current_y = i + y
         tb.write(x, current_y, line)
     
     tb.setForegroundColor(fgYellow)
-    x = int(halfwidth - (LOGO_SUBTITLE.len / 2))
-    tb.write(x, current_y + 2, LOGO_SUBTITLE)
+    x = int(halfwidth - (logoSubtitle.len / 2))
+    tb.write(x, current_y + 2, logoSubtitle)
     tb.resetAttributes()
 
     tb.write(1, 1, "Account:")
