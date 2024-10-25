@@ -1,9 +1,8 @@
 import illwill
 import strutils
+import "../global"
 
-from "../global" import formatGrid
-
-proc help_page*(tb: var TerminalBuffer) =
+proc help_page*(tb: var TerminalBuffer, lastPage: string) =
     let ascii_art = @[
         r"            _           __ _     _   ",
         r"  /\  /\___| |_ __     / /(_)___| |_ ",
@@ -23,8 +22,9 @@ proc help_page*(tb: var TerminalBuffer) =
         ("Up", "Select Up"),
         ("Down", "Select Down"),
         ("Return", "Confirm"),
+        ("F1", "Logout"),
         ("h", "Help Page"),
-        ("m", "Main Page")
+        ("m", "Main Page"),
     ]
 
     let h = int(tb.height - (4 + ascii_art.len))
@@ -33,6 +33,10 @@ proc help_page*(tb: var TerminalBuffer) =
     for i, line in grid:
         tb.write(w, i + (2 + ascii_art.len), line)
 
+    var x = 7
+    var y = 3
+    tb.drawRect(x, y, x - 5, y - 2, true)
+    tb.write(3, 2, "Back")
 
-
-
+    if LAST_KEY == Key.Enter:
+        PAGE = lastPage

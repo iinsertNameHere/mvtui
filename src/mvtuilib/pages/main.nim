@@ -1,36 +1,34 @@
 import illwill
 import strutils
 import tables
-import "../account"
-import "../countries"
+import "../global"
+import "../mullvad/account"
+import "../mullvad/status"
+import "../asciiart/countries"
+import "../mullvad/connection"
 
+const maxSelectIndex = 5
+const minSelectIndex = 0
 proc main_page*(tb: var TerminalBuffer, account: var Account) =
-    let ascii_art = @[
-        r"                        d8b  d8b                          d8b ",
-        r"                        88P  88P                          88P ",
-        r"                       d88  d88                          d88  ",
-        r"  88bd8b,d88b ?88   d8P888  888  ?88   d8P d888b8b   d888888  ",
-        r"  88P'`?8P'?8bd88   88 ?88  ?88  d88  d8P'd8P' ?88  d8P' ?88  ",
-        r" d88  d88  88P?8(  d88  88b  88b ?8b ,88' 88b  ,88b 88b  ,88b ",
-        r"d88' d88'  88b`?88P'?8b  88b  88b`?888P'  `?88P'`88b`?88P'`88b"
-    ]
+    if SELECT_INDEX > maxSelectIndex:
+        SELECT_INDEX = minSelectIndex
+    elif SELECT_INDEX < minSelectIndex:
+        SELECT_INDEX = maxSelectIndex
 
     let halfwidth  = tb.width / 2
-    let halfheight = tb.height / 2
 
-    var x = int(halfwidth - (ascii_art[0].len / 2))
-    var y = 5
+    var x = int(halfwidth - (LOGO_ART[0].len / 2))
+    var y = 3
 
     tb.setForegroundColor(fgBlue)
     var current_y = 0 + y
-    for i, line in ascii_art:
+    for i, line in LOGO_ART:
         current_y = i + y
         tb.write(x, current_y, line)
     
     tb.setForegroundColor(fgYellow)
-    let subtitle = "-= Mullvad Terminal User Interface =-"
-    x = int(halfwidth - (subtitle.len / 2))
-    tb.write(x, current_y + 2, subtitle)
+    x = int(halfwidth - (LOGO_SUBTITLE.len / 2))
+    tb.write(x, current_y + 2, LOGO_SUBTITLE)
     tb.resetAttributes()
 
     tb.write(1, 1, "Account:")
@@ -53,20 +51,67 @@ proc main_page*(tb: var TerminalBuffer, account: var Account) =
 
     tb.setForegroundColor(fgCyan, bright=true)
 
-    var country = countries[account.status.location.split(",")[0].strip()]
+    var location = account.status.location.split(",")[0].strip()
+    if not (location in countrynames):
+        location = "Mullvad"
+
+    var country = countries[location]
     for line in country:
         tb.write(x, current_y, line)
         current_y += 1
 
     tb.resetAttributes()
 
+    x = int(halfwidth / 2) + 10
+    y = int(tb.height / 2) - 2
+
+    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 0)
+    if account.status.state == "Disconnected":
+        tb.write(x - 11, y - 1, "Connect")
+    else:
+        tb.write(x - 12, y - 1, "Disconnect")
+
+    y += 4
+
+    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 1)
+    tb.setForegroundColor(fgGreen)
+    tb.write(x - (8 + int(ACTIVE_RELAY_COUNTRY.len / 2)), y - 1, ACTIVE_RELAY_COUNTRY)
+    tb.resetAttributes()
+
+    y += 4    
+
+    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 2)
+    tb.write(x - 10, y - 1, "Quit")
+
+
+    x = int(halfwidth + (halfwidth / 2)) + 5
+    y = int(tb.height / 2) - 2
+
+    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 3)
+    tb.write(x - 12, y - 1, "Settings")
+
+    y += 4
+
+    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 4)
+    tb.write(x - 11, y - 1, "Account")
+
+    y += 4
+
+    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 5)
+    tb.write(x - 10, y - 1, "Infos")
+
+
     tb.drawHorizLine(0, tb.width, tb.height - 3)
     tb.write(0, tb.height - 3, "├")
     tb.write(tb.width - 1, tb.height - 3, "┤")
 
     if account.status.state == "Connected": tb.setForegroundColor(fgGreen)
+    elif account.status.state == "Connecting": tb.setForegroundColor(fgYellow)
     else: tb.setForegroundColor(fgRed)
-    tb.write(7, tb.height - 2, account.status.state)
+    var state = account.status.state
+    if state == "Connecting":
+        state &= "..."
+    tb.write(7, tb.height - 2, state)
     
     tb.setForegroundColor(fgBlue)
     tb.write(int((tb.width / 2) - (account.status.location.len / 2)), tb.height - 2, account.status.location)
@@ -75,4 +120,22 @@ proc main_page*(tb: var TerminalBuffer, account: var Account) =
     tb.write(tb.width - account.status.ipv4.len - 7, tb.height - 2, account.status.ipv4)
 
     tb.resetAttributes()
+
+    if LAST_KEY == Key.Enter:
+        if SELECT_INDEX == 0:
+            if account.status.state == "Disconnected":
+                connect()
+            else:
+                disconnect()    
+        elif SELECT_INDEX == 1:
+            SELECT_INDEX = 0
+            PAGE = "CHOOSERELAY"
+        elif SELECT_INDEX == 2:
+            exitProc()
+        elif SELECT_INDEX == 3:
+            discard
+        elif SELECT_INDEX == 4:
+            discard
+        elif SELECT_INDEX == 5:
+            discard
 

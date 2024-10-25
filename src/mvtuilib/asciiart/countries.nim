@@ -1,5 +1,23 @@
 import tables
 
+const countrynames* = @[
+    "Albania", "Australia", "Austria",
+    "Belgium", "Brazil", "Bulgaria",
+    "Canada", "Chile", "Colombia",
+    "Croatia", "Cyprus", "Czech Republic",
+    "Denmark", "Estonia", "Finland",
+    "France", "Germany", "Greece",
+    "Hongkong", "Hungary", "Indonesia" ,
+    "Ireland", "Israel", "Italy", "Japan",
+    "Latvia", "Mexico", "Netherlands",
+    "New Zealand", "Norway", "Peru",
+    "Poland", "Portugal", "Romania",
+    "Serbia", "Singapore", "Slovakia",
+    "Slovenia", "South Africa", "Spain",
+    "Sweden", "Switzerland", "Thailand",
+    "Turkey", "UK", "Ukraine", "USA"
+]
+
 const countries* = {
     "Albania": @[
         "              ⣰⣿  ⢀⡀                    ",
@@ -932,8 +950,28 @@ const countries* = {
         "                    ⠈⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠋   ",
         "                          ⠙⠛⢿⠟⠛⠛⠉⠙⢻     ",
         "                            ⠈     ⠈⠁    "
+    ],
+    "Mullvad": @[
+        "             ⣀⣀⣤⣤⣶⣶⣶⣶⣶⣤⣤⣀⣀              ",
+        "         ⢀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣤⡀          ",
+        "       ⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄        ",
+        "     ⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⡉    ⠈⠙⠻⣿⣿⣿⣿⣿⣷⡄      ",
+        "    ⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠉⢠⠇       ⠈⢿⣿⣿⣿⣿⣿⣆     ",
+        "   ⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣭⣍⡉⠙⠒⠋         ⠘⣿⣿⣿⣿⣿⣿⣆    ",
+        "  ⢠⣿⣏⣀⡇       ⠉⠛⢷⣄          ⢠⣿⣿⣿⣿⣿⣿⣿⡄   ",
+        "  ⣼⣿⣿⣿⣆          ⠙⠿⣦⣀      ⢀⣼⣿⣿⣿⣿⣿⣿⣿⣧   ",
+        "  ⣿⣿⣿⣿⣿⣦⡀          ⠈⠙⠷⣶⣄⣀⡀ ⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿   ",
+        "  ⣿⣿⣿⣿⣿⣿⣷⣄             ⠉⠉⠛⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠄  ",
+        "  ⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀    ⢀⣠⣴⠟⠂    ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿   ",
+        "  ⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⠒⠒⠒⠚⠛⠉       ⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃   ",
+        "   ⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃             ⢻⣿⣿⣿⣿⣿⣿⣿⡏    ",
+        "    ⠹⣿⣿⣿⣿⣿⣿⠟⠁              ⠈⠻⣿⣿⣿⣿⣿⠏     ",
+        "     ⠙⢿⣿⣿⣿⣿⣦⡄              ⣠⣼⣿⣿⣿⡿⠋      ",
+        "       ⠙⢿⣿⣿⣿⣿⣷⣦⣤⣀⣀⡀  ⢀⣀⣠⣤⣶⣿⣿⣿⣿⡿⠋        ",
+        "         ⠉⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠉          ",
+        "            ⠈⠉⠛⠻⠿⣿⣿⣿⣿⣿⠿⠟⠛⠉⠁             "
     ]
-}.toTable
+}.toOrderedTable
 
 proc getMaxHeight(): int =
     result = 0

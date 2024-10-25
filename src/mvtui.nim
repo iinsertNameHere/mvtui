@@ -1,20 +1,15 @@
-# Simple example that prints out the size of the terminal window and
-# demonstrates the basic structure of a full-screen app.
+import os, illwill, times
 
-import os
-import options
-import illwill
-import times
-from "mvtuilib/global" import BORDER_COLOR
-import "mvtuilib/account"
+import "mvtuilib/global"
+
+import "mvtuilib/mullvad/account"
+import "mvtuilib/mullvad/status"
 
 import "mvtuilib/pages/help" 
 import "mvtuilib/pages/main" 
-
-proc exitProc() {.noconv.} =
-  illwillDeinit()
-  showCursor()
-  quit(0)
+import "mvtuilib/pages/login"
+import "mvtuilib/pages/logout"
+import "mvtuilib/pages/chooserelay"
 
 proc main() =
   illwillInit(fullscreen=true)
@@ -23,15 +18,11 @@ proc main() =
 
 
   # Get account and status Data
-  var opt_account = getAccount()
-  var account: Account
-  if opt_account.isSome:
-    account = opt_account.get()
-  else:
-    account = newAccount("0000000000000", "NONE", "NONE", newStatus("Dissconected", "NONE", "NONE"))
-  var t0 = epochTime()
+  var account = getAccount()
 
-  var page: string = "MAIN"
+  var t0 = epochTime()
+  PAGE = "MAIN"
+  var lastPage = PAGE
   
   # Main Loop
   while true:
@@ -41,12 +32,23 @@ proc main() =
     var tb = newTerminalBuffer(termWidth, termHeight)
 
     # Define Hotkeys
-    var key = getKey()
-    case key
-    of Key.Escape, Key.Q: exitProc()
-    of Key.H: page = "HELP"
-    of Key.M: page = "MAIN"
-    else: discard
+    LAST_KEY = getKey()
+    case LAST_KEY:
+      of Key.Escape, Key.Q: exitProc()
+      of Key.Up: SELECT_INDEX -= 1
+      of Key.Down: SELECT_INDEX += 1
+      of Key.H: 
+        if PAGE != "HELP": lastPage = PAGE
+        SELECT_INDEX = 0
+        PAGE = "HELP"
+      of Key.F1:
+        if account != NONEACCOUNT:
+          SELECT_INDEX = 0
+          PAGE = "LOGOUT"
+      else: discard
+
+    if account == NONEACCOUNT:
+      PAGE = "LOGIN"
 
     # Draw Border
     tb.setForegroundColor(BORDER_COLOR)
@@ -54,20 +56,24 @@ proc main() =
     tb.resetAttributes()
 
     # Handle pages
-    if page == "MAIN": tb.main_page(account)
-    elif page == "HELP": tb.help_page()
+    if PAGE == "MAIN": tb.main_page(account)
+    elif PAGE == "HELP": tb.help_page(lastPage)
+    elif PAGE == "LOGIN": tb.login_page(account)
+    elif PAGE == "LOGOUT": tb.logout_page(account)
+    elif PAGE == "CHOOSERELAY": tb.chooserelay_page() 
+    else: PAGE = "MAIN"
 
     # Display Buffer
     tb.display()
     
     # Refresh status all 5 sec
     var time = (epochTime() - t0)
-    if int(time) > 5:
+    if time > 4:
       var newstatus = getStatus()
       if newstatus != NONESTATUS:
         account.status = newstatus
       t0 = epochTime()
 
-    sleep(20)
+    sleep(25)
 
 main()
