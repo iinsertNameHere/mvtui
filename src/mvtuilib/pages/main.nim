@@ -8,8 +8,18 @@ import "../mullvad/connection"
 import "../asciiart/countries"
 import "../asciiart/logo"
 
+import "../widgets/button"
+
 const maxSelectIndex = 5
 const minSelectIndex = 0
+
+var connectionBtn = newButtonWidget(16, 0, "",         true)
+var relayBtn      = newButtonWidget(16, 1, "",         true, textColor = fgGreen)
+var quitBtn       = newButtonWidget(16, 2, "Quit",     true)
+var settingsBtn   = newButtonWidget(16, 3, "Settings", true)
+var accountBtn    = newButtonWidget(16, 4, "Account",  true)
+var infosBtn      = newButtonWidget(16, 5, "Infos",    true)
+
 proc main_page*(tb: var TerminalBuffer, account: var Account) =
     if SELECT_INDEX > maxSelectIndex:
         SELECT_INDEX = minSelectIndex
@@ -63,44 +73,26 @@ proc main_page*(tb: var TerminalBuffer, account: var Account) =
 
     tb.resetAttributes()
 
-    x = int(halfwidth / 2) + 10
-    y = int(tb.height / 2) - 2
+    connectionBtn.place(int(halfwidth / 2) - 10, int(tb.height / 2) - 4)
+    if account.status.state == "Disconnected": connectionBtn.label = "Connect"
+    else: connectionBtn.label = "Disconnect"
+    connectionBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
-    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 0)
-    if account.status.state == "Disconnected":
-        tb.write(x - 11, y - 1, "Connect")
-    else:
-        tb.write(x - 12, y - 1, "Disconnect")
+    relayBtn.place(connectionBtn.x, connectionBtn.y + 4)
+    relayBtn.label = ACTIVE_RELAY_COUNTRY
+    relayBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
-    y += 4
+    quitBtn.place(relayBtn.x, relayBtn.y + 4)
+    quitBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
-    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 1)
-    tb.setForegroundColor(fgGreen)
-    tb.write(x - (8 + int(ACTIVE_RELAY_COUNTRY.len / 2)), y - 1, ACTIVE_RELAY_COUNTRY)
-    tb.resetAttributes()
+    settingsBtn.place(int(halfwidth + (halfwidth / 2)) - 5, int(tb.height / 2) - 4)
+    settingsBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
-    y += 4    
+    accountBtn.place(settingsBtn.x, settingsBtn.y + 4)
+    accountBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
-    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 2)
-    tb.write(x - 10, y - 1, "Quit")
-
-
-    x = int(halfwidth + (halfwidth / 2)) + 5
-    y = int(tb.height / 2) - 2
-
-    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 3)
-    tb.write(x - 12, y - 1, "Settings")
-
-    y += 4
-
-    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 4)
-    tb.write(x - 11, y - 1, "Account")
-
-    y += 4
-
-    tb.drawRect(x, y, x - 16, y - 2, SELECT_INDEX == 5)
-    tb.write(x - 10, y - 1, "Infos")
-
+    infosBtn.place(accountBtn.x, accountBtn.y + 4)
+    infosBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
     tb.drawHorizLine(0, tb.width, tb.height - 3)
     tb.write(0, tb.height - 3, "├")
@@ -122,21 +114,20 @@ proc main_page*(tb: var TerminalBuffer, account: var Account) =
 
     tb.resetAttributes()
 
-    if LAST_KEY == Key.Enter:
-        if SELECT_INDEX == 0:
-            if account.status.state == "Disconnected":
-                connect()
-            else:
-                disconnect()    
-        elif SELECT_INDEX == 1:
-            SELECT_INDEX = 0
-            PAGE = "CHOOSERELAY"
-        elif SELECT_INDEX == 2:
-            exitProc()
-        elif SELECT_INDEX == 3:
-            discard
-        elif SELECT_INDEX == 4:
-            discard
-        elif SELECT_INDEX == 5:
-            discard
+    if connectionBtn.triggert:
+        if account.status.state == "Disconnected":
+            connect()
+        else:
+            disconnect()    
+    elif relayBtn.triggert:
+        SELECT_INDEX = 0
+        PAGE = "CHOOSERELAY"
+    elif quitBtn.triggert:
+        exitProc()
+    elif settingsBtn.triggert:
+        discard
+    elif accountBtn.triggert:
+        discard
+    elif infosBtn.triggert:
+        discard
 

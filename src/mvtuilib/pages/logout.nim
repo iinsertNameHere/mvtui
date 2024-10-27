@@ -2,8 +2,14 @@ import illwill
 import "../mullvad/account"
 import "../global"
 
+import "../widgets/button"
+
 const maxSelectIndex = 1
 const minSelectIndex = 0
+
+var logoutBtn = newButtonWidget(10, 0, "Logout", true)
+var cancleBtn = newButtonWidget(10, 1, "Cancle", true)
+
 proc logout_page*(tb: var TerminalBuffer, account: var Account) =
 
     if SELECT_INDEX > maxSelectIndex:
@@ -16,18 +22,14 @@ proc logout_page*(tb: var TerminalBuffer, account: var Account) =
     tb.write(x, y, "Are you sure that you")
     tb.write(x + 3, y + 1, "want to Logout?")
 
-    x = int(tb.width / 2) - 5 
-    y = int(tb.height / 2) - 2
-    tb.drawRect(x, y, x + 9, y - 2, SELECT_INDEX == 0)
-    tb.write(x + 2, y - 1, "Logout")
+    logoutBtn.place(int(tb.width / 2) - 5, int(tb.height / 2) - 2)
+    logoutBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
-    y += 3
+    cancleBtn.place(logoutBtn.x, logoutBtn.y + 4)
+    cancleBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
-    tb.drawRect(x, y, x + 9, y - 2, SELECT_INDEX == 1)
-    tb.write(x + 2, y - 1, "Cancle")
-
-    if LAST_KEY == Key.Enter:
-        if SELECT_INDEX == 0:
-            account.logout()
-        elif SELECT_INDEX == 1:
-            PAGE = "MAIN"
+    if logoutBtn.triggert:
+        account.logout()
+    elif cancleBtn.triggert:
+        PAGE = "MAIN"
+        SELECT_INDEX = 0

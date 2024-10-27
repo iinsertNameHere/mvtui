@@ -47,12 +47,16 @@ proc displayCountries*(tb: var TerminalBuffer) =
         if idx >= scrollStart and idx < scrollEnd:  # Only render visible countries
             if y <= tb.height - 4:
                 if ACTIVE_RELAY_COUNTRY == country and SELECT_INDEX == idx:
-                    tb.setForegroundColor(fgYellow)
+                    tb.setForegroundColor(fgYellow, true)
                 elif SELECT_INDEX == idx:
-                    tb.setForegroundColor(fgGreen)  # Highlight the selected country
+                    tb.setForegroundColor(fgWhite, true)  # Highlight the selected country
                 elif ACTIVE_RELAY_COUNTRY == country:
-                    tb.setForegroundColor(fgBlue)
-                tb.write(x, y, country)
+                    tb.setForegroundColor(fgBlue, true)
+                
+                if SELECT_INDEX == idx:
+                    tb.write(x, y, "[" & country & "]")
+                else:
+                    tb.write(x, y, country)
                 tb.resetAttributes()
             y += 1
         idx += 1
@@ -80,12 +84,16 @@ proc displayRelaysForCountry*(tb: var TerminalBuffer, selectedCountry: string) =
         if idx >= scrollStart and idx < scrollEnd:  # Only render visible relays
             if y <= tb.height - 4:
                 if ACTIVE_RELAY == relay and relayIndex == idx:
-                    tb.setForegroundColor(fgYellow)
+                    tb.setForegroundColor(fgYellow, true)
                 elif relayIndex == idx:
-                    tb.setForegroundColor(fgGreen)  # Highlight the selected relay
+                    tb.setForegroundColor(fgWhite, true)  # Highlight the selected relay
                 elif ACTIVE_RELAY == relay:
-                    tb.setForegroundColor(fgBlue)
-                tb.write(x, y, relay)
+                    tb.setForegroundColor(fgBlue, true)
+
+                if relayIndex == idx:
+                    tb.write(x, y, "[" & relay & "]")
+                else:
+                    tb.write(x, y, relay)
                 tb.resetAttributes()
             y += 1
         idx += 1

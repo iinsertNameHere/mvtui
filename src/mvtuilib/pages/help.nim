@@ -1,8 +1,12 @@
-import illwill
-import strutils
+import illwill, strutils
 import "../global"
+import "../widgets/button"
+
+var backBtn = newButtonWidget(7, 0, " Back ", false)
 
 proc help_page*(tb: var TerminalBuffer, lastPage: string) =
+    SELECT_INDEX = 0
+
     let ascii_art = @[
         r"            _           __ _     _   ",
         r"  /\  /\___| |_ __     / /(_)___| |_ ",
@@ -21,7 +25,8 @@ proc help_page*(tb: var TerminalBuffer, lastPage: string) =
         ("q", "Quit Program"),
         ("Up", "Select Up"),
         ("Down", "Select Down"),
-        ("Return", "Confirm"),
+        ("Enter", "Confirm"),
+        ("Backspace", "Back"),
         ("F1", "Logout"),
         ("h", "Help Page"),
         ("m", "Main Page"),
@@ -33,10 +38,8 @@ proc help_page*(tb: var TerminalBuffer, lastPage: string) =
     for i, line in grid:
         tb.write(w, i + (2 + ascii_art.len), line)
 
-    var x = 7
-    var y = 3
-    tb.drawRect(x, y, x - 5, y - 2, true)
-    tb.write(3, 2, "Back")
+    backBtn.place(7, 3)
+    backBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
-    if LAST_KEY == Key.Enter:
+    if backBtn.triggert:
         PAGE = lastPage
