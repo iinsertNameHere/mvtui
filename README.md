@@ -1,11 +1,11 @@
-<center>
+<div align="center">
 <img src="images/mvtui.svg" width="170px">
 
 <br>
 
-<h1>MvTUI - Mullvad Terminal UI</h1>
+<h1><code>MvTUI</code> - Mullvad Terminal UI</h1>
 
-</center>
+</div>
 
 **MvTUI** is a terminal-based user interface for managing **Mullvad VPN** connections. MvTUI provides a convenient way to interact with Mullvad's VPN service directly from the terminal, eliminating the need for CLI commands.
 
