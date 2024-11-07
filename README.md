@@ -7,7 +7,7 @@
 
 </div>
 
-**MvTUI** is a terminal-based user interface for managing **Mullvad VPN** connections. MvTUI provides a convenient way to interact with Mullvad's VPN service directly from the terminal, eliminating the need for CLI commands.
+**MvTUI** is a terminal-based user interface for managing **[Mullvad VPN](https://mullvad.net/)** connections. MvTUI provides a convenient way to interact with Mullvad's VPN service directly from the terminal, eliminating the need for CLI commands.
 
 ## :telescope: Features
 
@@ -23,7 +23,7 @@
 
 ## :wrench: Installation
 
-To install MvTUI, ensure you have `mullvad` and `git` installed on your system. Then, clone this repository and install with the following commands:
+To install MvTUI, ensure you have `mullvad`, `git`, `nim` and `nimble` installed on your system. Then, clone this repository and install with the following commands:
 
 ```bash
 git clone https://github.com/iinsertNameHere/mvtui
@@ -50,10 +50,14 @@ Start MvTUI by running it in your terminal:
 - **Backspace**: Go back to the previous menu
 - **h**: Display the help menu with keybindings and feature info
 
+
 ## :bangbang: Disclaimer
 
 MvTUI is an independent project and is not affiliated with [Mullvad](https://mullvad.net/). Use this software responsibly and follow [Mullvad's](https://mullvad.net/) terms of service.
 
+## :hearts: Shoutout
+- [Mullvad VPN](https://mullvad.net/)
+- [illwill](https://github.com/johnnovak/illwill)
 
 ## :bug: Bugs
 
