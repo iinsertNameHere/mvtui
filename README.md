@@ -52,7 +52,7 @@ Start MvTUI by running it in your terminal:
 
 ## :bangbang: Disclaimer
 
-MvTUI is an independent project and is not affiliated with ][Mullvad](https://mullvad.net/). Use this software responsibly and follow [Mullvad's](https://mullvad.net/) terms of service.
+MvTUI is an independent project and is not affiliated with [Mullvad](https://mullvad.net/). Use this software responsibly and follow [Mullvad's](https://mullvad.net/) terms of service.
 
 
 ## :bug: Bugs
