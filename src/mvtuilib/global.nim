@@ -1,5 +1,6 @@
 import illwill
 import strutils
+import json
 
 # Custom function to left-justify (ljust) a string by adding spaces
 proc ljust(s: string, width: int): string =
@@ -49,5 +50,6 @@ var
   SELECT_INDEX*: int = 0
   LAST_KEY*: Key     = Key.None
   PAGE*: string      = ""
+  SETTINGS*: JsonNode = newJNull()
   ACTIVE_RELAY*: string = "fi-hel-wg-001"
   ACTIVE_RELAY_COUNTRY*: string = "Finland"
