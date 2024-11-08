@@ -10,15 +10,12 @@ import "../asciiart/logo"
 
 import "../widgets/button"
 
-const maxSelectIndex = 5
+const maxSelectIndex = 2
 const minSelectIndex = 0
 
-var connectionBtn = newButtonWidget(16, 0, "",         true)
-var relayBtn      = newButtonWidget(16, 1, "",         true, textColor = fgGreen)
-var quitBtn       = newButtonWidget(16, 2, "Quit",     true)
-var settingsBtn   = newButtonWidget(16, 3, "Settings", true)
-var accountBtn    = newButtonWidget(16, 4, "Account",  true)
-var infosBtn      = newButtonWidget(16, 5, "Infos",    true)
+var connectionBtn = newButtonWidget(20, 0, "",         true)
+var relayBtn      = newButtonWidget(20, 1, "",         true, textColor = fgGreen)
+var settingsBtn   = newButtonWidget(20, 2, "Settings", true)
 
 proc main_page*(tb: var TerminalBuffer, account: var Account) =
     if SELECT_INDEX > maxSelectIndex:
@@ -73,7 +70,8 @@ proc main_page*(tb: var TerminalBuffer, account: var Account) =
 
     tb.resetAttributes()
 
-    connectionBtn.place(int(halfwidth / 2) - 10, int(tb.height / 2) - 4)
+    # connectionBtn.place(int(halfwidth / 2) - 10, int(tb.height / 2) - 4)
+    connectionBtn.place(1, int(tb.height / 2) - 4)
     if account.status.state == "Disconnected": connectionBtn.label = "Connect"
     else: connectionBtn.label = "Disconnect"
     connectionBtn.draw(tb, SELECT_INDEX, LAST_KEY)
@@ -82,17 +80,12 @@ proc main_page*(tb: var TerminalBuffer, account: var Account) =
     relayBtn.label = ACTIVE_RELAY_COUNTRY
     relayBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
-    quitBtn.place(relayBtn.x, relayBtn.y + 4)
-    quitBtn.draw(tb, SELECT_INDEX, LAST_KEY)
-
-    settingsBtn.place(int(halfwidth + (halfwidth / 2)) - 5, int(tb.height / 2) - 4)
+    settingsBtn.place(relayBtn.x, relayBtn.y + 4)
     settingsBtn.draw(tb, SELECT_INDEX, LAST_KEY)
 
-    accountBtn.place(settingsBtn.x, settingsBtn.y + 4)
-    accountBtn.draw(tb, SELECT_INDEX, LAST_KEY)
-
-    infosBtn.place(accountBtn.x, accountBtn.y + 4)
-    infosBtn.draw(tb, SELECT_INDEX, LAST_KEY)
+    tb.drawRect(0, connectionBtn.y - 1, 22, settingsBtn.y + 3)
+    tb.write(0, connectionBtn.y - 1, "├")
+    tb.write(0, settingsBtn.y + 3, "├")
 
     tb.drawHorizLine(0, tb.width, tb.height - 3)
     tb.write(0, tb.height - 3, "├")
@@ -122,12 +115,6 @@ proc main_page*(tb: var TerminalBuffer, account: var Account) =
     elif relayBtn.triggert:
         SELECT_INDEX = 0
         PAGE = "CHOOSERELAY"
-    elif quitBtn.triggert:
-        exitProc()
     elif settingsBtn.triggert:
-        discard
-    elif accountBtn.triggert:
-        discard
-    elif infosBtn.triggert:
         discard
 
